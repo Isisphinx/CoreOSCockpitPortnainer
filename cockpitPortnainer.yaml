@@ -5,36 +5,36 @@ passwd:
     - name: core
       ssh_authorized_keys:
         - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCPEmgrLnA/CyTtVLERtReio1zLtilev54bzAi6g5lGDLqGm+ThwuQJl8MnUKWvQwQuwyPYekFD13yjEAwm8R7bo1AlbHMxi4B6zIdzGy0G/aHP2Yj2jo2d8RExCDzqK+MZy81C/yEArILKFIhIvz66ddjrWmHPSQi1vUGUftX72bE+ch3ARxiwWE3FDj2jtzBeTLm4DsYPfJFX1fpwmasxxF87xgTa2orilDBURzKb4LQ2S47roKXHOZcg25cFuA7VcTENRo/D0umvDvg1X0ZdEwM7vcSdNxq6GIh7ccB8sC1S2uBKoFCQzYomo+9BSYX2Wykvwx1HngumLl/BJcfn
-systemd:
-  units:
-    - name: rpm-ostree-install-cockpit.service
-      enabled: true
-      contents: |
-        [Unit]
-        Description=Layer cockpit with rpm-ostree
-        Wants=network-online.target
-        After=network-online.target
-        # We run before `zincati.service` to avoid conflicting rpm-ostree
-        # transactions.
-        Before=zincati.service
-        ConditionPathExists=!/var/lib/%N.stamp
+# systemd:
+#   units:
+#     - name: rpm-ostree-install-cockpit.service
+#       enabled: true
+#       contents: |
+#         [Unit]
+#         Description=Layer cockpit with rpm-ostree
+#         Wants=network-online.target
+#         After=network-online.target
+#         # We run before `zincati.service` to avoid conflicting rpm-ostree
+#         # transactions.
+#         Before=zincati.service
+#         ConditionPathExists=!/var/lib/%N.stamp
 
-        [Service]
-        Type=oneshot
-        RemainAfterExit=yes
-        # `--allow-inactive` ensures that rpm-ostree does not return an error
-        # if the package is already installed. This is useful if the package is
-        # added to the root image in a future Fedora CoreOS release as it will
-        # prevent the service from failing.
-        ExecStart=/usr/bin/rpm-ostree install --apply-live --allow-inactive install cockpit-system cockpit-ostree cockpit-podman
-        ExecStart=/bin/touch /var/lib/%N.stamp
+#         [Service]
+#         Type=oneshot
+#         RemainAfterExit=yes
+#         # `--allow-inactive` ensures that rpm-ostree does not return an error
+#         # if the package is already installed. This is useful if the package is
+#         # added to the root image in a future Fedora CoreOS release as it will
+#         # prevent the service from failing.
+#         ExecStart=/usr/bin/rpm-ostree install --apply-live --allow-inactive install cockpit-system cockpit-ostree cockpit-podman
+#         ExecStart=/bin/touch /var/lib/%N.stamp
 
-        [Install]
-        WantedBy=multi-user.target
-storage:
-  files:
-    - path: /etc/ssh/sshd_config.d/02-enable-passwords.conf
-      contents:
-        inline: | 
-          PasswordAuthentication yes
-      mode: 0644
+#         [Install]
+#         WantedBy=multi-user.target
+# storage:
+#   files:
+#     - path: /etc/ssh/sshd_config.d/02-enable-passwords.conf
+#       contents:
+#         inline: | 
+#           PasswordAuthentication yes
+#       mode: 0644
